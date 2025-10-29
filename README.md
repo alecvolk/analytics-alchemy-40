@@ -1,73 +1,186 @@
-# Welcome to your Lovable project
+# E-Commerce Analytics Dashboard
 
-## Project info
+A professional, responsive analytics dashboard for e-commerce platforms with role-based access, data editing capabilities, and comprehensive audit logging.
 
-**URL**: https://lovable.dev/projects/233486db-6b1b-4b49-8527-f0c6bbfced8e
+## 🚀 Features
 
-## How can I edit this code?
+### Core Functionality
+- **Role-Based Access Control**: Admin, Analyst, and Viewer roles
+- **KPI Dashboard**: Real-time metrics for Revenue, Average Order Value, and Conversion Rate
+- **Interactive Charts**: Revenue trends, category breakdown, and performance analytics
+- **Product Management**: Searchable, sortable product table with TanStack Table
+- **Audit Logging**: Complete change history with before/after values
+- **Data Export**: Mock CSV, PNG, and PDF export functionality
 
-There are several ways of editing your application.
+### Special Features
+- **Hidden Admin Panel**: Secret access via `Ctrl+Shift+A` keyboard shortcut (Admin role only)
+- **Live Data Editing**: Modify product information with preview and confirmation
+- **Change Tracking**: All edits require a reason and are logged in the audit trail
+- **Visual Indicators**: Clear notifications when unsaved changes exist
+- **Theme Support**: Light/dark mode toggle
 
-**Use Lovable**
+## 🛠️ Tech Stack
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/233486db-6b1b-4b49-8527-f0c6bbfced8e) and start prompting.
+- **React 18** + **TypeScript**
+- **Vite** - Build tool
+- **TailwindCSS** - Styling
+- **shadcn/ui** - UI components
+- **Recharts** - Charts and data visualization
+- **Zustand** - State management
+- **TanStack Table** - Advanced table functionality
+- **React Router** - Navigation
 
-Changes made via Lovable will be committed automatically to this repo.
+## 📦 Installation
 
-**Use your preferred IDE**
+```bash
+# Clone the repository
+git clone <repository-url>
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+# Navigate to project directory
+cd <project-directory>
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+# Install dependencies
+npm install
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 🔐 Accessing the Dashboard
 
-**Use GitHub Codespaces**
+1. **Login Page**: Select your role (Admin, Analyst, or Viewer)
+2. **Admin Access**: Choose "Admin" role to enable hidden features
+3. **Hidden Admin Panel**: Press `Ctrl+Shift+A` in the dashboard to reveal the admin panel
+4. **Navigation**: Use the sidebar to navigate between different sections
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### User Roles
 
-## What technologies are used for this project?
+- **Admin**: Full access including the hidden admin panel for data editing
+- **Analyst**: View analytics and reports (read-only)
+- **Viewer**: Basic dashboard access (read-only)
 
-This project is built with:
+## 🎨 Design System
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+The dashboard uses a professional color scheme with:
+- Primary: Blue (professional analytics feel)
+- Secondary: Indigo/purple (modern accents)
+- Success: Green
+- Warning: Orange
+- Semantic HSL color tokens for consistency
+- Gradient backgrounds for KPI cards
+- Smooth animations and transitions
 
-## How can I deploy this project?
+## 📊 Using the Admin Panel
 
-Simply open [Lovable](https://lovable.dev/projects/233486db-6b1b-4b49-8527-f0c6bbfced8e) and click on Share -> Publish.
+1. **Access**: Login as Admin and press `Ctrl+Shift+A`
+2. **Edit Data**: Modify any product field directly in the table
+3. **Preview Changes**: See real-time updates in the dashboard
+4. **Save Changes**: Click "Save Changes" and provide a reason
+5. **Audit Trail**: All changes are logged in the Audit Log page
 
-## Can I connect a custom domain to my Lovable project?
+### Making Edits
 
-Yes, you can!
+- Edit product names, categories, prices, stock, sales, or conversion rates
+- Changes are previewed in real-time
+- A "Unsaved Changes" indicator appears in the header
+- Confirm changes with a mandatory reason field
+- Discard changes to revert to original data
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 📁 Project Structure
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```
+src/
+├── components/
+│   ├── ui/              # shadcn UI components
+│   ├── DashboardLayout.tsx  # Main layout with sidebar
+│   ├── KPICard.tsx      # KPI metric cards
+│   └── ExportButtons.tsx    # Export functionality
+├── pages/
+│   ├── Login.tsx        # Role selection
+│   ├── Dashboard.tsx    # Main overview
+│   ├── Products.tsx     # Product table
+│   ├── Analytics.tsx    # Detailed analytics
+│   ├── AuditLog.tsx     # Change history
+│   └── AdminPanel.tsx   # Hidden admin panel
+├── store/
+│   └── dashboardStore.ts    # Zustand state management
+├── App.tsx              # Route configuration
+└── index.css            # Design system tokens
+```
+
+## 🧪 Testing
+
+Run the test suite:
+
+```bash
+npm test
+```
+
+Key test areas:
+- Component rendering
+- State management
+- Data flow
+- User interactions
+
+## 🔧 Configuration
+
+### Environment Variables
+No environment variables required - uses mock data
+
+### Theme Customization
+Edit `src/index.css` to modify:
+- Color palette (HSL values)
+- Gradients
+- Shadows
+- Border radius
+
+## 📈 Mock Data
+
+The dashboard uses generated mock data including:
+- 10 sample products
+- 30 days of revenue history
+- Category breakdowns
+- Conversion metrics
+
+Data persists in memory during the session and resets on page reload.
+
+## 🎥 Demo Flow
+
+1. Open application → redirected to login
+2. Select "Admin" role
+3. Explore dashboard with KPI cards and charts
+4. Navigate to Products page
+5. View Analytics page for detailed insights
+6. Press `Ctrl+Shift+A` to reveal admin panel
+7. Make edits to product data
+8. Save changes with a reason
+9. Check Audit Log to see the change history
+10. Export data in various formats
+
+## 🚀 Deployment
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview production build:
+
+```bash
+npm run preview
+```
+
+## 📝 License
+
+This project is a demonstration/portfolio piece.
+
+## 🤝 Contributing
+
+This is a review project. Contributions are not expected but feedback is welcome!
+
+---
+
+Built with ❤️ using React, TypeScript, and modern web technologies.
