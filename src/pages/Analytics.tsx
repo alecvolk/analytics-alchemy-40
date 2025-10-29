@@ -15,7 +15,7 @@ import {
 } from 'recharts';
 
 export default function Analytics() {
-  const { metrics, products } = useDashboardStore();
+  const { metrics, products, visibility } = useDashboardStore();
 
   // Top performing products
   const topProducts = [...products]
@@ -33,7 +33,9 @@ export default function Analytics() {
         <p className="text-muted-foreground">Deep dive into your performance metrics</p>
       </div>
 
-      <Card className="shadow-lg">
+      {visibility.analyticsCharts && (
+        <>
+          <Card className="shadow-lg">
         <CardHeader>
           <CardTitle>Revenue Trend with Forecast</CardTitle>
         </CardHeader>
@@ -149,6 +151,8 @@ export default function Analytics() {
           </CardContent>
         </Card>
       </div>
+        </>
+      )}
     </div>
   );
 }

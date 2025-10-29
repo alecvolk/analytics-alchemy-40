@@ -32,13 +32,22 @@ export interface DashboardMetrics {
   categoryBreakdown: { category: string; value: number }[];
 }
 
+export interface DashboardVisibility {
+  kpiCards: boolean;
+  revenueChart: boolean;
+  categoryPieChart: boolean;
+  categoryBarChart: boolean;
+  productsTable: boolean;
+  analyticsCharts: boolean;
+}
+
 interface DashboardState {
   // User
   currentUser: string;
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
   
-  // Admin mode
+  // Admin mode (no longer hidden)
   adminMode: boolean;
   toggleAdminMode: () => void;
   
@@ -46,13 +55,21 @@ interface DashboardState {
   products: Product[];
   originalProducts: Product[];
   metrics: DashboardMetrics;
+  originalMetrics: DashboardMetrics;
   auditLogs: AuditLog[];
+  
+  // Visibility controls
+  visibility: DashboardVisibility;
+  toggleVisibility: (section: keyof DashboardVisibility) => void;
   
   // Pending changes
   hasPendingChanges: boolean;
   
   // Actions
   updateProduct: (id: string, updates: Partial<Product>) => void;
+  updateMetrics: (updates: Partial<DashboardMetrics>) => void;
+  updateRevenueHistory: (index: number, revenue: number) => void;
+  updateCategoryBreakdown: (index: number, value: number) => void;
   confirmChanges: (reason: string) => void;
   discardChanges: () => void;
   exportData: (format: 'csv' | 'png' | 'pdf') => void;
@@ -112,6 +129,7 @@ const calculateMetrics = (products: Product[]): DashboardMetrics => {
 
 export const useDashboardStore = create<DashboardState>((set, get) => {
   const initialProducts = generateMockProducts();
+  const initialMetrics = calculateMetrics(initialProducts);
   
   return {
     currentUser: 'admin@dashboard.com',
@@ -119,9 +137,18 @@ export const useDashboardStore = create<DashboardState>((set, get) => {
     adminMode: false,
     products: initialProducts,
     originalProducts: initialProducts,
-    metrics: calculateMetrics(initialProducts),
+    metrics: initialMetrics,
+    originalMetrics: initialMetrics,
     auditLogs: [],
     hasPendingChanges: false,
+    visibility: {
+      kpiCards: true,
+      revenueChart: true,
+      categoryPieChart: true,
+      categoryBarChart: true,
+      productsTable: true,
+      analyticsCharts: true,
+    },
 
     setUserRole: (role) => set({ userRole: role }),
 
@@ -130,6 +157,16 @@ export const useDashboardStore = create<DashboardState>((set, get) => {
       if (userRole === 'admin') {
         set({ adminMode: !adminMode });
       }
+    },
+
+    toggleVisibility: (section) => {
+      const { visibility } = get();
+      set({
+        visibility: {
+          ...visibility,
+          [section]: !visibility[section],
+        },
+      });
     },
 
     updateProduct: (id, updates) => {
@@ -144,11 +181,39 @@ export const useDashboardStore = create<DashboardState>((set, get) => {
       });
     },
 
+    updateMetrics: (updates) => {
+      const { metrics } = get();
+      set({
+        metrics: { ...metrics, ...updates },
+        hasPendingChanges: true,
+      });
+    },
+
+    updateRevenueHistory: (index, revenue) => {
+      const { metrics } = get();
+      const updatedHistory = [...metrics.revenueHistory];
+      updatedHistory[index] = { ...updatedHistory[index], revenue };
+      set({
+        metrics: { ...metrics, revenueHistory: updatedHistory },
+        hasPendingChanges: true,
+      });
+    },
+
+    updateCategoryBreakdown: (index, value) => {
+      const { metrics } = get();
+      const updatedBreakdown = [...metrics.categoryBreakdown];
+      updatedBreakdown[index] = { ...updatedBreakdown[index], value };
+      set({
+        metrics: { ...metrics, categoryBreakdown: updatedBreakdown },
+        hasPendingChanges: true,
+      });
+    },
+
     confirmChanges: (reason) => {
-      const { products, originalProducts, currentUser } = get();
+      const { products, originalProducts, metrics, originalMetrics, currentUser } = get();
       const logs: AuditLog[] = [];
 
-      // Generate audit logs for each change
+      // Generate audit logs for product changes
       products.forEach(product => {
         const original = originalProducts.find(p => p.id === product.id);
         if (!original) return;
@@ -170,18 +235,38 @@ export const useDashboardStore = create<DashboardState>((set, get) => {
         });
       });
 
+      // Generate audit logs for metrics changes
+      Object.keys(metrics).forEach(key => {
+        const typedKey = key as keyof DashboardMetrics;
+        if (typedKey === 'revenueHistory' || typedKey === 'categoryBreakdown') return;
+        
+        if (metrics[typedKey] !== originalMetrics[typedKey]) {
+          logs.push({
+            id: `${Date.now()}-${Math.random()}`,
+            timestamp: new Date(),
+            user: currentUser,
+            action: 'UPDATE',
+            field: `Metrics - ${key}`,
+            oldValue: originalMetrics[typedKey] as string | number,
+            newValue: metrics[typedKey] as string | number,
+            reason,
+          });
+        }
+      });
+
       set({
         originalProducts: [...products],
+        originalMetrics: { ...metrics },
         auditLogs: [...logs, ...get().auditLogs],
         hasPendingChanges: false,
       });
     },
 
     discardChanges: () => {
-      const { originalProducts } = get();
+      const { originalProducts, originalMetrics } = get();
       set({
         products: [...originalProducts],
-        metrics: calculateMetrics(originalProducts),
+        metrics: { ...originalMetrics },
         hasPendingChanges: false,
       });
     },

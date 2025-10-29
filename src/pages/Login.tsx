@@ -70,8 +70,8 @@ export default function Login() {
           </Button>
 
           <div className="text-center text-sm text-muted-foreground">
-            <p>Hint: Select "Admin" to access the hidden admin panel</p>
-            <p className="mt-1 font-mono text-xs">Press Ctrl+Shift+A in the dashboard</p>
+            <p>Hint: Select "Admin" to access the comprehensive admin panel</p>
+            <p className="mt-1">Control all dashboard data and visibility settings</p>
           </div>
         </CardContent>
       </Card>

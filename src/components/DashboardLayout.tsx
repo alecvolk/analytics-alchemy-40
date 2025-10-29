@@ -39,17 +39,7 @@ export function DashboardLayout() {
   const { adminMode, hasPendingChanges, toggleAdminMode, userRole } = useDashboardStore();
   const { theme, setTheme } = useTheme();
 
-  // Secret key combo: Ctrl+Shift+A
-  useEffect(() => {
-    const handleKeyPress = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-        toggleAdminMode();
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
-  }, [toggleAdminMode]);
+  // Removed secret key combo - admin panel now always visible for admins
 
   const isActive = (path: string) => location.pathname === path;
 
@@ -88,7 +78,7 @@ export function DashboardLayout() {
               </SidebarGroupContent>
             </SidebarGroup>
 
-            {adminMode && (
+            {userRole === 'admin' && (
               <SidebarGroup>
                 <SidebarGroupLabel>Admin</SidebarGroupLabel>
                 <SidebarGroupContent>
@@ -112,11 +102,6 @@ export function DashboardLayout() {
               <span className="text-sidebar-foreground/60">Role:</span>
               <Badge variant="outline">{userRole}</Badge>
             </div>
-            {adminMode && (
-              <Badge variant="destructive" className="w-full justify-center">
-                Admin Mode Active
-              </Badge>
-            )}
           </div>
         </Sidebar>
 

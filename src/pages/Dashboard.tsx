@@ -22,7 +22,7 @@ import {
 const COLORS = ['hsl(217, 91%, 60%)', 'hsl(244, 58%, 64%)', 'hsl(263, 70%, 50%)', 'hsl(142, 76%, 36%)'];
 
 export default function Dashboard() {
-  const { metrics } = useDashboardStore();
+  const { metrics, visibility } = useDashboardStore();
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -34,7 +34,8 @@ export default function Dashboard() {
         <ExportButtons />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      {visibility.kpiCards && (
+        <div className="grid gap-6 md:grid-cols-3">
         <KPICard
           title="Total Revenue"
           value={`$${metrics.revenue.toLocaleString()}`}
@@ -56,13 +57,15 @@ export default function Dashboard() {
           icon={Target}
           variant="warning"
         />
-      </div>
+        </div>
+      )}
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card className="shadow-lg">
-          <CardHeader>
-            <CardTitle>Revenue Trend (Last 30 Days)</CardTitle>
-          </CardHeader>
+        {visibility.revenueChart && (
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle>Revenue Trend (Last 30 Days)</CardTitle>
+            </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={metrics.revenueHistory}>
@@ -96,9 +99,11 @@ export default function Dashboard() {
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
+          </Card>
+        )}
 
-        <Card className="shadow-lg">
+        {visibility.categoryPieChart && (
+          <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>Revenue by Category</CardTitle>
           </CardHeader>
@@ -130,10 +135,12 @@ export default function Dashboard() {
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
-        </Card>
+          </Card>
+        )}
       </div>
 
-      <Card className="shadow-lg">
+      {visibility.categoryBarChart && (
+        <Card className="shadow-lg">
         <CardHeader>
           <CardTitle>Category Performance</CardTitle>
         </CardHeader>
@@ -158,7 +165,8 @@ export default function Dashboard() {
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
-      </Card>
+        </Card>
+      )}
     </div>
   );
 }

@@ -23,7 +23,7 @@ import {
 } from '@/components/ui/table';
 
 export default function Products() {
-  const { products, userRole } = useDashboardStore();
+  const { products, visibility } = useDashboardStore();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [globalFilter, setGlobalFilter] = useState('');
 
@@ -134,9 +134,10 @@ export default function Products() {
         </div>
       </div>
 
-      <Card className="shadow-lg">
-        <CardHeader>
-          <CardTitle>Product Inventory</CardTitle>
+      {visibility.productsTable && (
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle>Product Inventory</CardTitle>
           <div className="relative max-w-sm">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input
@@ -191,7 +192,8 @@ export default function Products() {
             Showing {table.getRowModel().rows.length} of {products.length} products
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      )}
     </div>
   );
 }
